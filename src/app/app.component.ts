@@ -1,5 +1,5 @@
 import { Monster } from './models/monster.model';
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, effect, model, signal } from '@angular/core';
 import { PlayingCardComponent } from "./components/playing-card/playing-card.component";
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { MonsterType } from './utils/monster.utils';
@@ -14,6 +14,11 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   monsters!: Monster[];
+  search = model<string>('');
+
+  filteredMonsters = computed(() => {
+    return this.monsters.filter(monster => monster.name.includes(this.search()));
+  });
 
   constructor() {
 

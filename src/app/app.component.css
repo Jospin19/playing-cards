@@ -7,3 +7,8 @@ h1 { background-color: black; color: white; }
     align-items: center;
     justify-content: center;
 }
+
+.center{
+    margin-top: 40px;
+    text-align: center;
+}
