@@ -4,10 +4,11 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { PlayingCardComponent } from '../../components/playing-card/playing-card.component';
 
 @Component({
   selector: 'app-monster',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PlayingCardComponent],
   templateUrl: './monster.component.html',
   styleUrl: './monster.component.css'
 })
@@ -27,11 +28,19 @@ export class MonsterComponent implements OnInit, OnDestroy {
     attackDescription: ['', [Validators.required]]
   });
 
+  monster: Monster = Object.assign(new Monster(), this.formGroup.value);
+
   monsterId = signal<number | undefined>(undefined)
-  routeSubscription: Subscription | null = null;
   monsterTypes = Object.values(MonsterType);
+
+  private routeSubscription: Subscription | null = null;
+  private formValueSubscription: Subscription | null = null;
   
   ngOnInit() : void{
+    this.formValueSubscription = this.formGroup.valueChanges.subscribe(data => {
+      this.monster = Object.assign(new Monster(), data);
+    });
+
     this.routeSubscription = this.route.params.subscribe(params => {
       this.monsterId.set(params['id'] ? parseInt(params['id']) : undefined);
     });
@@ -39,6 +48,7 @@ export class MonsterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routeSubscription?.unsubscribe();
+    this.formValueSubscription?.unsubscribe();
   }
 
   next(){
