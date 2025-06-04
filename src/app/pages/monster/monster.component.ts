@@ -1,7 +1,7 @@
 import { MonsterType } from './../../utils/monster.utils';
 import { Monster } from './../../models/monster.model';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -14,16 +14,18 @@ import { Subscription } from 'rxjs';
 export class MonsterComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  formGroup = new FormGroup({
-    name: new FormControl<string>('', [Validators.required]),
-    image: new FormControl<string>('', [Validators.required]),
-    type: new FormControl<MonsterType>(MonsterType.ELECTRIC, [Validators.required]),
-    hp: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(200)]),
-    figCaption: new FormControl<string>('', [Validators.required]),
-    attackName: new FormControl<string>('', [Validators.required]),
-    attackStrength: new FormControl<number>(0, [Validators.required, Validators.min(1), Validators.max(200)]),
-    attackDescription: new FormControl<string>('', [Validators.required])
-  })
+  private fb = inject(FormBuilder);
+
+  formGroup = this.fb.group({
+    name: ['', [Validators.required]],
+    image: ['', [Validators.required]],
+    type: [MonsterType.ELECTRIC, [Validators.required]],
+    hp: [0, [Validators.required, Validators.min(1), Validators.max(200)]],
+    figCaption: ['', [Validators.required]],
+    attackName: ['', [Validators.required]],
+    attackStrength: [0, [Validators.required, Validators.min(1), Validators.max(200)]],
+    attackDescription: ['', [Validators.required]]
+  });
 
   monsterId = signal<number | undefined>(undefined)
   routeSubscription: Subscription | null = null;
