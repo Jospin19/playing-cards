@@ -1,0 +1,20 @@
+<form (submit)="submit($event)">
+    <div class="form-field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" [formControl] = "name" />
+        @if(name.invalid && (name.dirty || name.touched)) {
+            <div class="error">This field is required</div>
+        }
+    </div>
+
+    <div class="form-field">
+        <label for="hp">HP</label>
+        <input type="number" id="hp" name="hp" [formControl] = "hp" />
+        @if(hp.invalid && (hp.dirty || hp.touched)) {
+            <div class="error">This field is invalid</div>
+        }
+    </div>
+
+    <button type="submit" [disabled]="name.invalid || hp.invalid"> Save </button>
+</form>
+
