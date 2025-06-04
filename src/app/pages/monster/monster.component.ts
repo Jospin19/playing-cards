@@ -1,6 +1,7 @@
+import { MonsterType } from './../../utils/monster.utils';
 import { Monster } from './../../models/monster.model';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -13,11 +14,20 @@ import { Subscription } from 'rxjs';
 export class MonsterComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  name = new FormControl('', [Validators.required]);
-  hp = new FormControl(0, [Validators.required,Validators.min(1), Validators.max(200)]);
+  formGroup = new FormGroup({
+    name: new FormControl<string>('', [Validators.required]),
+    image: new FormControl<string>('', [Validators.required]),
+    type: new FormControl<MonsterType>(MonsterType.ELECTRIC, [Validators.required]),
+    hp: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(200)]),
+    figCaption: new FormControl<string>('', [Validators.required]),
+    attackName: new FormControl<string>('', [Validators.required]),
+    attackStrength: new FormControl<number>(0, [Validators.required, Validators.min(1), Validators.max(200)]),
+    attackDescription: new FormControl<string>('', [Validators.required])
+  })
 
   monsterId = signal<number | undefined>(undefined)
   routeSubscription: Subscription | null = null;
+  monsterTypes = Object.values(MonsterType);
   
   ngOnInit() : void{
     this.routeSubscription = this.route.params.subscribe(params => {
@@ -39,7 +49,24 @@ export class MonsterComponent implements OnInit, OnDestroy {
 
   submit(event: Event) {
     event.preventDefault();
-    console.log(this.name.value);
-    console.log(this.hp.value);
+    console.log(this.formGroup.value);
   }
+
+  isFieldValid(name: string) {
+    const formControl = this.formGroup.get(name);
+    return formControl?.invalid && (formControl.dirty || formControl.touched);
+  }
+
+  onFileChange(event: any) {
+ 		const reader = new FileReader();
+ 		if(event.target.files && event.target.files.length) {
+ 			const [file] = event.target.files;
+ 			reader.readAsDataURL(file); reader.onload = () => {
+ 				this.formGroup.patchValue({
+ 					image: reader.result as string
+ 				});
+ 			};
+ 		}
+ 	}
+
 }
