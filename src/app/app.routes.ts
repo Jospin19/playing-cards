@@ -22,7 +22,7 @@ export const routes: Routes = [
                 component: MonsterComponent
             },
             {
-                path: ':id',
+                path: ':monster',
                 component: MonsterComponent
             }
         ]

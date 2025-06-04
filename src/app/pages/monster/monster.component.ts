@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PlayingCardComponent } from '../../components/playing-card/playing-card.component';
+import { MonsterService } from '../../services/monster/monster.service';
 
 @Component({
   selector: 'app-monster',
@@ -16,6 +17,7 @@ export class MonsterComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private monsterService = inject(MonsterService);
 
   formGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -30,7 +32,7 @@ export class MonsterComponent implements OnInit, OnDestroy {
 
   monster: Monster = Object.assign(new Monster(), this.formGroup.value);
 
-  monsterId = signal<number | undefined>(undefined)
+  monsterId = -1;
   monsterTypes = Object.values(MonsterType);
 
   private routeSubscription: Subscription | null = null;
@@ -42,7 +44,15 @@ export class MonsterComponent implements OnInit, OnDestroy {
     });
 
     this.routeSubscription = this.route.params.subscribe(params => {
-      this.monsterId.set(params['id'] ? parseInt(params['id']) : undefined);
+      if(params['monster']){
+        this.monsterId = parseInt(params['monster'], 10);
+        const monsterFound = this.monsterService.get(this.monsterId);
+
+        if(monsterFound){
+          this.monster = monsterFound;
+          this.formGroup.patchValue(this.monster);
+        }
+      }
     });
   }
 
@@ -52,7 +62,7 @@ export class MonsterComponent implements OnInit, OnDestroy {
   }
 
   next(){
-    let nextId = this.monsterId() || 0;
+    let nextId = this.monsterId || 0;
 
     nextId++;
 
@@ -61,7 +71,15 @@ export class MonsterComponent implements OnInit, OnDestroy {
 
   submit(event: Event) {
     event.preventDefault();
-    console.log(this.formGroup.value);
+    if(this.monsterId === -1) {
+      this.monsterService.add(this.monster);  
+    }
+    else{
+      this.monster.id = this.monsterId;
+      this.monsterService.update(this.monster);
+    }
+
+    this.navigateBack();
   }
 
   isFieldValid(name: string) {
@@ -80,5 +98,9 @@ export class MonsterComponent implements OnInit, OnDestroy {
  			};
  		}
  	}
+
+  navigateBack() {
+    this.router.navigate(['/home']);
+  }
 
 }
