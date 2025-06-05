@@ -6,10 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PlayingCardComponent } from '../../components/playing-card/playing-card.component';
 import { MonsterService } from '../../services/monster/monster.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-monster',
-  imports: [ReactiveFormsModule, PlayingCardComponent],
+  imports: [ReactiveFormsModule, PlayingCardComponent, MatButtonModule, MatInputModule, MatSelectModule],
   templateUrl: './monster.component.html',
   styleUrl: './monster.component.css'
 })
@@ -101,6 +104,11 @@ export class MonsterComponent implements OnInit, OnDestroy {
 
   navigateBack() {
     this.router.navigate(['/home']);
+  }
+
+  deleteMonster()
+  {
+
   }
 
 }
