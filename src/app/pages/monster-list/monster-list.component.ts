@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 import { PlayingCardComponent } from '../../components/playing-card/playing-card.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-monster-list',
-  imports: [CommonModule, PlayingCardComponent, SearchBarComponent],
+  imports: [CommonModule, PlayingCardComponent, SearchBarComponent, MatButtonModule],
   templateUrl: './monster-list.component.html',
   styleUrl: './monster-list.component.css'
 })
