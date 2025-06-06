@@ -3,6 +3,7 @@ import { MonsterListComponent } from './pages/monster-list/monster-list.componen
 import { MonsterComponent } from './pages/monster/monster.component';
 import { not } from 'rxjs/internal/util/not';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
     {
@@ -13,6 +14,10 @@ export const routes: Routes = [
     {
         path: 'home',
         component: MonsterListComponent
+    },
+    {
+        path: 'login',
+        component: LoginComponent
     },
     {
         path: 'monster',
